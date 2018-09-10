@@ -23,6 +23,19 @@ app.post('/todos', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log('App started on port 3000');
+app.get('/todos', (req, res) => {
+    Todo.find().then((todos) => {
+        res.send({todos});
+    }, (err) => {
+        if(err) {
+            return res.status(400).send(err);
+        }
+    });
 });
+
+if(!module.parent) { // This is here to avoid errors when running Mocha (double listening)
+    app.listen(3000, () => {
+        console.log('App started on port 3000');
+    });
+}
+module.exports = {app};
