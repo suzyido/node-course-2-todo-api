@@ -1,11 +1,16 @@
 const expect = require('expect');
 const request = require('supertest');
+const {ObjectID} = require('mongodb');
 
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 
+const id = new ObjectID();
+const otherId = new ObjectID();
+
 const todos = [
   {
+    _id: id,
     text: 'First test todo'
   },
   {
@@ -72,6 +77,32 @@ describe('GET /todos', () => {
     .expect((res) => {
       expect(res.body.todos.length).toBe(3);
     })
+    .end(done);
+  });
+});
+
+describe('GET /todo/:id', () => {
+  it('should return a todo', (done) => {
+    request(app)
+    .get(`/todos/${id}`)
+    .expect(200)
+    .expect((res) => {
+      expect(res.body.text).toBe(todos[0].text);
+    })
+    .end(done);
+  });
+
+  it('should not return a todo for ObjectID not found', (done) => {
+    request(app)
+    .get(`/todos/${otherId}`)
+    .expect(404)
+    .end(done);
+  });
+  
+  it('should not return a todo for invalid ObjectID', (done) => {
+    request(app)
+    .get('/todos/1234')
+    .expect(400)
     .end(done);
   });
 });
