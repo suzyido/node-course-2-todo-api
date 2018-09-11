@@ -6,7 +6,10 @@ var {ObjectID} = require('mongodb');
 var {User} = require('./models/user');
 var {Todo} = require('./models/todo');
 
+
 var app = express();
+
+const post = process.evn.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -53,8 +56,8 @@ app.get('/todos/:id', (req, res) => {
 });
 
 if(!module.parent) { // This is here to avoid errors when running Mocha (double listening)
-    app.listen(3000, () => {
-        console.log('App started on port 3000');
+    app.listen(port, () => {
+        console.log(`App started on port ${port}`);
     });
 }
 
