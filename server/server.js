@@ -1,3 +1,5 @@
+require('./config/config');
+
 const _ = require('lodash');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -10,7 +12,7 @@ var {Todo} = require('./models/todo');
 
 var app = express();
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
@@ -93,10 +95,10 @@ app.patch('/todos/:id', (req, res) => {
     }).catch((e) => res.status(400).send());
 });
 
-if(!module.parent) { // This is here to avoid errors when running Mocha (double listening)
+//if(!module.parent) { // This is here to avoid errors when running Mocha (double listening)
     app.listen(port, () => {
         console.log(`App started on port ${port}`);
     });
-}
+//}
 
 module.exports = {app};
