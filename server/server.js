@@ -7,8 +7,8 @@ var bodyParser = require('body-parser');
 var {mongoose} = require('./db/mongoose');
 var {ObjectID} = require('mongodb');
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 var {Todo} = require('./models/todo');
-
 
 var app = express();
 
@@ -28,6 +28,10 @@ app.post('/users', (req, res) => {
     }).then((token) => {
         res.header('x-auth', token).send(user);
     })    
+});
+
+app.get('/users/me', authenticate, (req, res) => {
+    res.send(req.user);
 });
 
 app.post('/todos', (req, res) => {
