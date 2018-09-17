@@ -273,3 +273,33 @@ describe('POST /users/login', () => {
     });
   }); 
 });
+
+describe('DELETE /users/me/token', () => {
+  it('should delete the token for this logged in user', (done) => {
+    request(app)
+    .delete('/users/me/token')
+    .set('x-auth', users[0].tokens[0].token)
+    .expect(200)
+    .end((err, res) => {
+      if(err) {
+        return done(err);
+      }
+      User.findOne({email: users[0].email}).then((user) => {
+        expect(user.tokens.length).toBe(0);
+        done();
+      }).catch((err) => done(err));
+    })
+  });
+
+  it('should not delete the token for this non logged in user', (done) => {
+    request(app)
+    .delete('/users/me/token')
+    .expect(401)
+    .end((err, res) => {
+      if(err) {
+        return done(err);
+      }
+      done();
+    })    
+  }); 
+});
